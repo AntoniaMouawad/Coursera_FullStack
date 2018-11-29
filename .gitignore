@@ -1,0 +1,7 @@
+.idea
+README.md
+node_modules
+src
+npm*
+package*
+yarn.lock
