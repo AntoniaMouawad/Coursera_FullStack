@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {
     Card, CardBody, CardImg, CardText, CardTitle,
-    Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input, Row, Col
+    Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Label, Row, Col
 } from "reactstrap";
 import {Control, LocalForm, Errors} from 'react-redux-form';
 import {Link} from 'react-router-dom'
@@ -25,7 +25,7 @@ const RenderDish = ({dish}) => {
     )
 }
 
-const RenderComments = ({commentsArray}) => {
+const RenderComments = ({commentsArray, addComment, dishId}) => {
     if (commentsArray) {
         const commentsObj = commentsArray.map((commentObj) => {
                 return (
@@ -52,7 +52,7 @@ const RenderComments = ({commentsArray}) => {
                 <h4>Comments</h4>
 
                 {commentsObj}
-                < CommentForm/>
+                < CommentForm dishId = {dishId} addComment={addComment}/>
             </div>
         )
     }
@@ -76,7 +76,8 @@ class CommentForm extends Component {
         console.log('Current State is: ' + JSON.stringify(values));
         alert('Current State is: ' + JSON.stringify(values));
         this.setState({isModalOpen: false})
-
+        console.log(this.props, values)
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment)
     }
 
     toggleModal() {
@@ -115,8 +116,8 @@ class CommentForm extends Component {
                             </Row>
                             <Row className="form-group">
                                 <Col>
-                                    <Label htmlFor="name">Your Name</Label>
-                                    <Control.text model=".name" id="name" name="name"
+                                    <Label htmlFor="author">Your Name</Label>
+                                    <Control.text model=".author" id="author" name="author"
                                                   placeholder="Your Name"
                                                   className="form-control"
                                                   validators={{
@@ -124,7 +125,7 @@ class CommentForm extends Component {
                                                   }}
                                     />
                                     <Errors className="text-danger"
-                                        model=".name"
+                                        model=".author"
                                         show="touched"
                                         messages={{
                                             minLength: 'Must be greater than 2 characters',
@@ -135,8 +136,8 @@ class CommentForm extends Component {
                             </Row>
                             <Row className="form-group">
                                 <Col>
-                                    <Label htmlFor="comments">Comments</Label>
-                                    <Control.textarea model=".comments" id="comments" name="comments"
+                                    <Label htmlFor="comment">Comments</Label>
+                                    <Control.textarea model=".comment" id="comment" name="comment"
                                                       rows="6"
                                                       className="form-control"/>
                                 </Col>
@@ -171,11 +172,11 @@ const DishDetail = (props) => {
                 </div>
                 <div className="row" key={props.dish.id}>
                     < RenderDish dish={props.dish}/>
-                    < RenderComments commentsArray={props.comments}/>
+                    < RenderComments commentsArray={props.comments}
+                    addComment = {props.addComment}
+                    dishId = {props.dish.id}/>
 
                 </div>
-
-
             </div>
         )
     }
